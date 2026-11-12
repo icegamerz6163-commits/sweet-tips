@@ -3,182 +3,901 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweet Tips - Support Creators</title>
+    <title>Sweet Tips — Dashboard</title>
+    <link rel="icon" type="image/png" href="sweet-tips-candy-bucket.png">
     <style>
         :root {
-            --primary-pink: #ff4d88;
-            --light-pink: #fff0f5;
-            --text-color: #333333;
-            --bg-color: #f9f9f9;
-            --white: #ffffff;
+            --bg-cream: #f4f1ea;
+            --card-white: #ffffff;
+            --sidebar-active: #e7e1d5;
+            --sidebar-hover: #ece7dd;
+            --text-dark: #1f1f1f;
+            --text-muted: #66635e;
+            --border-subtle: #e5e0d5;
+            --brand-pink: #ff2e7e;
+            --brand-pink-soft: #fff0f6;
+            --accent-green: #16a34a;
+            --pill-gray: #e5e2dc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .container {
-            background-color: var(--white);
+        /* Top Navigation Bar */
+        .topbar {
+            height: 64px;
+            background-color: var(--bg-cream);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-logo img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--pill-gray);
+            padding: 5px 14px 5px 6px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            color: var(--text-dark);
+            transition: background 0.15s;
+        }
+
+        .profile-pill:hover {
+            background-color: #dcd7ce;
+        }
+
+        .avatar-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--brand-pink);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            position: relative;
+            transition: background 0.15s;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        .badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Shell */
+        .app-layout {
+            display: flex;
+            max-width: 1180px;
             width: 100%;
-            max-width: 480px;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            box-sizing: border-box;
+            margin: 12px auto 40px;
+            padding: 0 24px;
+            gap: 36px;
         }
 
-        .logo-area {
-            font-size: 40px;
+        /* Left Sidebar */
+        .sidebar {
+            width: 230px;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 2px;
+            transition: background 0.15s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active);
+            font-weight: 700;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background-color: var(--border-subtle);
+            margin: 12px 14px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 4px 14px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .share-sidebar-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 11px;
+            border-radius: 999px;
+            border: none;
+            background-color: var(--pill-gray);
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .share-sidebar-btn:hover {
+            background-color: #dcd7ce;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
             margin-bottom: 10px;
         }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: #111;
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
         }
 
-        p.subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 30px;
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #22c55e;
         }
 
+        .live-status a {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        /* Cards */
         .card {
-            background-color: var(--light-pink);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
+            background-color: var(--card-white);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
-        .card h3 {
+        .card-header {
             font-size: 15px;
-            margin-top: 0;
-            margin-bottom: 12px;
-            color: var(--primary-pink);
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
-        .amount-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+        .card-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
         }
 
-        .amount-btn {
-            background: var(--white);
-            border: 2px solid #ffd1e3;
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .amount-btn:hover, .amount-btn.active {
-            border-color: var(--primary-pink);
-            background-color: var(--primary-pink);
-            color: var(--white);
-        }
-
-        input[type="text"], textarea {
+        /* Progress Bar */
+        .progress-track {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
+            height: 8px;
+            background-color: #ece9e2;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 18px;
         }
 
-        input[type="text"]:focus, textarea:focus {
-            border-color: var(--primary-pink);
+        .progress-fill {
+            width: 75%;
+            height: 100%;
+            background-color: #22c55e;
+            border-radius: 999px;
         }
 
-        textarea {
-            resize: vertical;
-            height: 80px;
-        }
-
-        .support-btn {
-            background-color: var(--primary-pink);
-            color: var(--white);
-            border: none;
-            width: 100%;
-            padding: 14px;
+        /* Checklist Rows */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ebe7df;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            padding: 14px 18px;
+            margin-bottom: 10px;
         }
 
-        .support-btn:hover {
+        .checklist-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .check-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .check-circle.pending {
+            background-color: #d6d3cd;
+        }
+
+        .check-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .check-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .status-completed {
+            color: var(--accent-green);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-dark {
+            background-color: #1f1f1f;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-dark:hover {
             opacity: 0.9;
         }
 
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #999;
+        /* Profile Summary Card */
+        .profile-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .profile-info-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar-lg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--brand-pink-soft);
+            border: 2px solid var(--brand-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .profile-avatar-lg img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .profile-name {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .profile-url {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pill-gray {
+            background-color: var(--pill-gray);
+            border: none;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .btn-circle-gray {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--pill-gray);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 48px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #f2efe9;
+            font-size: 13.5px;
+        }
+
+        .stats-row span strong {
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .stats-row span {
+            color: var(--text-muted);
+        }
+
+        /* Public Tip Jar View ("Your page") */
+        .tip-box-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .tip-widget {
+            background: var(--card-white);
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .tip-widget h3 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preset-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--brand-pink-soft);
+            border: 1.5px solid #ffc2da;
+            padding: 12px 16px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+        }
+
+        .preset-row img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .preset-btn {
+            padding: 7px 14px;
+            border-radius: 999px;
+            border: 1.5px solid #ffb3d0;
+            background: white;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .preset-btn.active {
+            background: var(--brand-pink);
+            color: white;
+            border-color: var(--brand-pink);
+        }
+
+        .tip-input, .tip-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e0dcd3;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        .tip-submit {
+            width: 100%;
+            padding: 13px;
+            border-radius: 999px;
+            border: none;
+            background: var(--brand-pink);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tip-submit:hover {
+            opacity: 0.92;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1f1f1f;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 820px) {
+            .app-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .tip-box-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-area">🍭</div>
-        <h1>Support Sweet Tips</h1>
-        <p class="subtitle">Fuel independent creators, game devs, and projects!</p>
+    <!-- Top Header -->
+    <header class="topbar">
+        <a href="#" class="brand-logo" onclick="switchTab('home'); return false;">
+            <img src="sweet-tips-candy-bucket.png" alt="Sweet Tips Logo">
+            <span>Sweet Tips</span>
+        </a>
 
-        <div class="card">
-            <h3>Send a Tip</h3>
-            <div class="amount-buttons">
-                <button class="amount-btn active" onclick="setAmount(3)">$3</button>
-                <button class="amount-btn" onclick="setAmount(5)">$5</button>
-                <button class="amount-btn" onclick="setAmount(10)">$10</button>
-            </div>
-            <input type="text" id="supporterName" placeholder="Your Name or @handle (optional)">
-            <textarea id="supporterMessage" placeholder="Say something nice... (optional)"></textarea>
-            <button class="support-btn" onclick="processTip()">Support $3</button>
-        </div>
+        <div class="topbar-right">
+            <button class="profile-pill" onclick="switchTab('page')">
+                <div class="avatar-circle">I</div>
+                <span>Your page</span>
+            </button>
 
-        <div class="footer">
-            Powered by <strong>Sweet Tips</strong>
+            <button class="icon-btn" title="Notifications" onclick="showToast('No new notifications right now!')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span class="badge">3</span>
+            </button>
+
+            <button class="icon-btn" title="Home" onclick="switchTab('home')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </button>
+
+            <button class="icon-btn" title="Menu" onclick="switchTab('settings')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
         </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <div class="app-layout">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Home
+            </button>
+
+            <button class="nav-item" id="nav-page" onclick="switchTab('page')">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Your page
+            </button>
+
+            <button class="nav-item" id="nav-feed" onclick="switchTab('page')">
+                <svg viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                Feed
+            </button>
+
+            <button class="nav-item" id="nav-settings" onclick="switchTab('settings')">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Settings
+            </button>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-label">My support</div>
+
+            <button class="nav-item" onclick="showToast('Payments & orders history coming soon!')">
+                <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Payments &amp; orders
+            </button>
+
+            <button class="nav-item" onclick="showToast('No direct messages yet')">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Messages
+            </button>
+
+            <button class="nav-item" onclick="showToast('0 supporters so far — share your page!')">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                My supporters
+            </button>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-label">More ways to earn</div>
+
+            <button class="nav-item" onclick="showToast('Memberships module ready to configure')">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Memberships
+            </button>
+
+            <button class="nav-item" onclick="showToast('Shop digital renders & assets')">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                Shop
+            </button>
+
+            <button class="nav-item" onclick="showToast('Commissions panel')">
+                <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                Commissions
+            </button>
+
+            <button class="nav-item" onclick="showToast('Embeddable Sweet Tips buttons')">
+                <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Buttons &amp; widgets
+            </button>
+
+            <button class="share-sidebar-btn" onclick="copyShareLink()">Share</button>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+
+            <!-- VIEW 1: HOME DASHBOARD -->
+            <section id="view-home" class="view-section active">
+                <h1 class="page-title">Home</h1>
+                <div class="live-status">
+                    <span class="status-dot"></span>
+                    <span>Your page is live at: <a href="#" onclick="switchTab('page'); return false;">realcegamerz.xyz/icegamerz6163</a></span>
+                </div>
+
+                <!-- Onboarding Progress Card -->
+                <div class="card">
+                    <div class="card-header">Your page looks great!</div>
+                    <div class="card-sub">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        Let's share your page to get your first visitors or payment
+                    </div>
+
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checklist-left">
+                            <div class="check-circle">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="check-title">Connect to payments</span>
+                        </div>
+                        <span class="status-completed">Completed</span>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checklist-left">
+                            <div class="check-circle">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="check-title">Complete your basic profile</span>
+                        </div>
+                        <span class="status-completed">Completed</span>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checklist-left">
+                            <div class="check-circle">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div>
+                                <div class="check-title">More ways to earn</div>
+                                <div class="check-desc">Goal is set.</div>
+                            </div>
+                        </div>
+                        <span class="status-completed">Completed</span>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checklist-left">
+                            <div class="check-circle pending">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div>
+                                <div class="check-title">Start sharing!</div>
+                                <div class="check-desc">Share with friends and followers to get some page views or your first payment</div>
+                            </div>
+                        </div>
+                        <button class="btn-dark" onclick="copyShareLink()">Share</button>
+                    </div>
+                </div>
+
+                <!-- Creator Profile Summary Card -->
+                <div class="card">
+                    <div class="profile-summary">
+                        <div class="profile-info-left">
+                            <div class="profile-avatar-lg">
+                                <img src="sweet-tips-candy-bucket.png" alt="Avatar">
+                            </div>
+                            <div>
+                                <div class="profile-name">ICEGAMERZ</div>
+                                <div class="profile-url">
+                                    realcegamerz.xyz/icegamerz6163
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor:pointer" onclick="copyShareLink()"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button class="btn-pill-gray" onclick="switchTab('settings')">Edit profile</button>
+                            <button class="btn-circle-gray" title="Settings" onclick="switchTab('settings')">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="stats-row">
+                        <span><strong id="sweet-count">0</strong> Sweets</span>
+                        <span><strong>1</strong> Following</span>
+                        <span><strong>0</strong> Followers</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: PUBLIC CREATOR PAGE ("Your page") -->
+            <section id="view-page" class="view-section">
+                <h1 class="page-title">Your Public Page</h1>
+                <div class="live-status">
+                    <span>Previewing how supporters see <strong>ICEGAMERZ</strong></span>
+                </div>
+
+                <div class="tip-box-grid">
+                    <!-- About & Goal Card -->
+                    <div class="tip-widget">
+                        <h3>About ICEGAMERZ</h3>
+                        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
+                            Indie game dev, Roblox &amp; Minecraft creator, and founder of Sweet Tips! Every sweet supports new game updates and free community projects.
+                        </p>
+                        <div style="background: #f9f7f2; padding: 14px; border-radius: 12px;">
+                            <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Current Goal: New Dev Assets</div>
+                            <div class="progress-track" style="margin-bottom: 6px;">
+                                <div class="progress-fill" style="width: 35%; background: var(--brand-pink);"></div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">35% of $100 goal reached</div>
+                        </div>
+                    </div>
+
+                    <!-- Buy a Sweet Tip Jar -->
+                    <div class="tip-widget">
+                        <h3>
+                            <img src="sweet-tips-candy-bucket.png" alt="" style="width: 24px; height: 24px;">
+                            Buy ICEGAMERZ a Sweet
+                        </h3>
+
+                        <div class="preset-row">
+                            <img src="sweet-tips-candy-bucket.png" alt="Sweet">
+                            <span style="font-weight: 700; font-size: 14px; margin-right: auto;">$5 each</span>
+                            <button class="preset-btn active" onclick="selectSweets(1, this)">1</button>
+                            <button class="preset-btn" onclick="selectSweets(3, this)">3</button>
+                            <button class="preset-btn" onclick="selectSweets(5, this)">5</button>
+                        </div>
+
+                        <input type="text" class="tip-input" id="tipName" placeholder="Name or @nickname">
+                        <textarea class="tip-textarea" id="tipMsg" rows="3" placeholder="Say something nice..."></textarea>
+                        <button class="tip-submit" id="tipSubmitBtn" onclick="sendDemoTip()">Support $5</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: SETTINGS -->
+            <section id="view-settings" class="view-section">
+                <h1 class="page-title">Settings</h1>
+                <div class="card">
+                    <div class="card-header">Payment Link Configuration</div>
+                    <div class="card-sub">Paste your Stripe Payment Link or PayPal.me URL so the Support button redirects to real checkout.</div>
+                    <input type="text" class="tip-input" id="paymentUrlInput" placeholder="https://buy.stripe.com/your-link">
+                    <button class="btn-dark" onclick="savePaymentLink()">Save Payment Link</button>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <script>
-        let currentAmount = 3;
+    <div class="toast" id="toast">Link copied to clipboard!</div>
 
-        function setAmount(amount) {
-            currentAmount = amount;
-            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelector('.support-btn').innerText = `Support $${amount}`;
+    <script>
+        let sweetMultiplier = 1;
+        let savedCheckoutUrl = localStorage.getItem('sweetTipsCheckoutUrl') || '';
+
+        if (savedCheckoutUrl) {
+            document.getElementById('paymentUrlInput').value = savedCheckoutUrl;
         }
 
-        function processTip() {
-            const name = document.getElementById('supporterName').value || 'Anonymous';
-            const message = document.getElementById('supporterMessage').value;
-            
-            // Here is where you can plug in your Stripe Payment link or PayPal link later!
-            alert(`Thanks for supporting with $${currentAmount}! (Payment gateway integration goes here).`);
+        function switchTab(tabName) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+
+            const targetSection = document.getElementById('view-' + tabName);
+            if (targetSection) targetSection.classList.add('active');
+
+            const targetNav = document.getElementById('nav-' + tabName);
+            if (targetNav) targetNav.classList.add('active');
+        }
+
+        function selectSweets(count, btnElement) {
+            sweetMultiplier = count;
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            document.getElementById('tipSubmitBtn').innerText = `Support $${count * 5}`;
+        }
+
+        function sendDemoTip() {
+            const total = sweetMultiplier * 5;
+            if (savedCheckoutUrl) {
+                window.open(savedCheckoutUrl, '_blank');
+                return;
+            }
+            const currentCount = parseInt(document.getElementById('sweet-count').innerText, 10);
+            document.getElementById('sweet-count').innerText = currentCount + sweetMultiplier;
+            showToast(`Thank you! Simulated $${total} Sweet Tip sent.`);
+        }
+
+        function savePaymentLink() {
+            const url = document.getElementById('paymentUrlInput').value.trim();
+            savedCheckoutUrl = url;
+            localStorage.setItem('sweetTipsCheckoutUrl', url);
+            showToast('Payment link saved!');
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href);
+            showToast('Page link copied to clipboard!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2800);
         }
     </script>
-
 </body>
 </html>
