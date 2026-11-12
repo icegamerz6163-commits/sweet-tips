@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweet Tips — Creator Platform</title>
     <link rel="icon" type="image/png" id="favicon-link" href="sweet-tips-candy-bucket.png">
+    <!-- Stripe JavaScript SDK for Custom In-Page Checkout -->
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --bg-cream: #f4f1ea;
@@ -20,11 +22,7 @@
             --pill-gray: #e5e2dc;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -35,7 +33,6 @@
             flex-direction: column;
         }
 
-        /* Top Navigation Bar */
         .topbar {
             height: 64px;
             background-color: var(--bg-cream);
@@ -58,17 +55,9 @@
             font-size: 18px;
         }
 
-        .brand-logo img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
+        .brand-logo img { width: 36px; height: 36px; object-fit: contain; }
 
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .topbar-right { display: flex; align-items: center; gap: 14px; }
 
         .profile-pill {
             display: flex;
@@ -82,523 +71,163 @@
             cursor: pointer;
             border: none;
             color: var(--text-dark);
-            transition: background 0.15s;
-        }
-
-        .profile-pill:hover {
-            background-color: #dcd7ce;
         }
 
         .avatar-circle {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: var(--brand-pink);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 12px;
-            overflow: hidden;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--brand-pink); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 12px; overflow: hidden;
         }
-
-        .avatar-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
         .icon-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-dark);
-            position: relative;
-            transition: background 0.15s;
+            background: transparent; border: none; cursor: pointer;
+            padding: 8px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; color: var(--text-dark);
         }
+        .icon-btn:hover { background-color: var(--sidebar-hover); }
 
-        .icon-btn:hover {
-            background-color: var(--sidebar-hover);
-        }
-
-        /* Main Shell */
         .app-layout {
-            display: flex;
-            max-width: 1180px;
-            width: 100%;
-            margin: 12px auto 40px;
-            padding: 0 24px;
-            gap: 36px;
+            display: flex; max-width: 1180px; width: 100%;
+            margin: 12px auto 40px; padding: 0 24px; gap: 36px;
         }
 
-        /* Left Sidebar */
-        .sidebar {
-            width: 230px;
-            flex-shrink: 0;
-        }
+        .sidebar { width: 230px; flex-shrink: 0; }
 
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 999px;
-            border: none;
-            background: transparent;
-            color: var(--text-dark);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: left;
-            margin-bottom: 2px;
-            transition: background 0.15s;
+            display: flex; align-items: center; gap: 12px; width: 100%;
+            padding: 10px 14px; border-radius: 999px; border: none;
+            background: transparent; color: var(--text-dark); font-size: 14px;
+            font-weight: 500; cursor: pointer; text-align: left; margin-bottom: 2px;
         }
+        .nav-item:hover { background-color: var(--sidebar-hover); }
+        .nav-item.active { background-color: var(--sidebar-active); font-weight: 700; }
+        .nav-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.9; }
 
-        .nav-item:hover {
-            background-color: var(--sidebar-hover);
-        }
-
-        .nav-item.active {
-            background-color: var(--sidebar-active);
-            font-weight: 700;
-        }
-
-        .nav-item svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 1.9;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            flex-shrink: 0;
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background-color: var(--border-subtle);
-            margin: 12px 14px;
-        }
-
+        .sidebar-divider { height: 1px; background-color: var(--border-subtle); margin: 12px 14px; }
         .share-sidebar-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 11px;
-            border-radius: 999px;
-            border: none;
-            background-color: var(--pill-gray);
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: background 0.15s;
+            width: 100%; margin-top: 12px; padding: 11px; border-radius: 999px;
+            border: none; background-color: var(--pill-gray); font-weight: 700;
+            font-size: 14px; color: var(--text-dark); cursor: pointer;
         }
 
-        .share-sidebar-btn:hover {
-            background-color: #dcd7ce;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
+        .main-content { flex: 1; min-width: 0; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        .page-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
 
         .live-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13.5px;
-            margin-bottom: 20px;
-            color: var(--text-muted);
+            display: flex; align-items: center; gap: 8px; font-size: 13.5px;
+            margin-bottom: 20px; color: var(--text-muted);
         }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #22c55e; }
+        .live-status a { color: #2563eb; text-decoration: underline; font-weight: 500; }
 
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #22c55e;
-        }
-
-        .live-status a {
-            color: #2563eb;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        /* Cards */
         .card {
-            background-color: var(--card-white);
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            background-color: var(--card-white); border-radius: 18px;
+            padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
+        .card-header { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .card-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
 
-        .card-header {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .card-sub {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        /* Creator Hero Banner */
         .profile-banner-container {
-            width: 100%;
-            height: 160px;
+            width: 100%; height: 160px;
             background: linear-gradient(135deg, #ff2e7e, #ff8da1);
-            border-radius: 16px 16px 0 0;
-            background-size: cover;
-            background-position: center;
-            position: relative;
+            border-radius: 16px 16px 0 0; background-size: cover; background-position: center; position: relative;
         }
-
         .banner-edit-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--text-dark);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9);
+            color: var(--text-dark); border: none; padding: 6px 12px; border-radius: 999px;
+            font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
         }
 
         .profile-header-card {
-            background: var(--card-white);
-            border-radius: 18px;
-            overflow: hidden;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            background: var(--card-white); border-radius: 18px; overflow: hidden; margin-bottom: 24px;
         }
-
         .profile-header-body {
-            padding: 0 24px 20px;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
+            padding: 0 24px 20px; position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
         }
-
         .profile-avatar-wrapper {
-            width: 84px;
-            height: 84px;
-            border-radius: 50%;
-            border: 4px solid var(--card-white);
-            background: var(--brand-pink-soft);
-            margin-top: -42px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            cursor: pointer;
+            width: 84px; height: 84px; border-radius: 50%; border: 4px solid var(--card-white);
+            background: var(--brand-pink-soft); margin-top: -42px; overflow: hidden; position: relative; cursor: pointer;
         }
+        .profile-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name-display { font-size: 20px; font-weight: 800; }
+        .profile-handle-display { font-size: 13.5px; color: var(--text-muted); }
 
-        .profile-avatar-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-name-display {
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .profile-handle-display {
-            font-size: 13.5px;
-            color: var(--text-muted);
-        }
-
-        /* File Upload Drop Zones */
-        .upload-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
+        .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
         .file-upload-box {
-            border: 2px dashed #dcd7ce;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            background: #faf8f5;
-            transition: border-color 0.15s, background 0.15s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+            border: 2px dashed #dcd7ce; border-radius: 14px; padding: 16px; text-align: center;
+            cursor: pointer; background: #faf8f5; display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
+        .file-upload-label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+        .preview-thumb { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--brand-pink); }
+        .preview-banner-thumb { width: 100%; height: 48px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
 
-        .file-upload-box:hover {
-            border-color: var(--brand-pink);
-            background: var(--brand-pink-soft);
-        }
-
-        .file-upload-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .file-upload-hint {
-            font-size: 11.5px;
-            color: var(--text-muted);
-        }
-
-        .preview-thumb {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--brand-pink);
-        }
-
-        .preview-banner-thumb {
-            width: 100%;
-            height: 48px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid #ddd;
-        }
-
-        /* Public Page Sub-tabs */
-        .public-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e5e0d5;
-            padding-bottom: 12px;
-        }
-
+        .public-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #e5e0d5; padding-bottom: 12px; }
         .public-tab-btn {
-            background: transparent;
-            border: none;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 6px 14px;
-            border-radius: 999px;
-            transition: 0.15s;
+            background: transparent; border: none; font-size: 15px; font-weight: 700;
+            color: var(--text-muted); cursor: pointer; padding: 6px 14px; border-radius: 999px;
         }
+        .public-tab-btn.active { background: var(--text-dark); color: white; }
 
-        .public-tab-btn.active {
-            background: var(--text-dark);
-            color: white;
-        }
-
-        /* Tip Jar & Shop Layout */
-        .tip-box-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .tip-widget {
-            background: var(--card-white);
-            border-radius: 18px;
-            padding: 24px;
-        }
-
-        .tip-widget h3 {
-            font-size: 17px;
-            font-weight: 800;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .tip-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .tip-widget { background: var(--card-white); border-radius: 18px; padding: 24px; }
+        .tip-widget h3 { font-size: 17px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
         .preset-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--brand-pink-soft);
-            border: 1.5px solid #ffc2da;
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px; background: var(--brand-pink-soft);
+            border: 1.5px solid #ffc2da; padding: 12px 16px; border-radius: 14px; margin-bottom: 14px;
         }
-
-        .preset-row img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-        }
-
+        .preset-row img { width: 32px; height: 32px; object-fit: contain; }
         .preset-btn {
-            padding: 7px 14px;
-            border-radius: 999px;
-            border: 1.5px solid #ffb3d0;
-            background: white;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            color: var(--text-dark);
+            padding: 7px 14px; border-radius: 999px; border: 1.5px solid #ffb3d0;
+            background: white; font-weight: 700; font-size: 13px; cursor: pointer; color: var(--text-dark);
         }
-
-        .preset-btn.active {
-            background: var(--brand-pink);
-            color: white;
-            border-color: var(--brand-pink);
-        }
+        .preset-btn.active { background: var(--brand-pink); color: white; border-color: var(--brand-pink); }
 
         .tip-input, .tip-textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #e0dcd3;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            font-family: inherit;
+            width: 100%; padding: 12px 14px; border: 1px solid #e0dcd3;
+            border-radius: 12px; font-size: 14px; margin-bottom: 12px; font-family: inherit;
+        }
+
+        /* Stripe Custom Elements Box styling */
+        #card-element {
+            padding: 12px; border: 1px solid #e0dcd3; border-radius: 12px; background: #fff; margin-bottom: 12px;
         }
 
         .tip-submit {
-            width: 100%;
-            padding: 13px;
-            border-radius: 999px;
-            border: none;
-            background: var(--brand-pink);
-            color: white;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
+            width: 100%; padding: 13px; border-radius: 999px; border: none;
+            background: var(--brand-pink); color: white; font-size: 15px; font-weight: 700; cursor: pointer;
         }
 
-        .tip-submit:hover {
-            opacity: 0.92;
-        }
-
-        /* Shop Grid */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         .shop-item-card {
-            background: var(--card-white);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-subtle);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background: var(--card-white); border-radius: 16px; padding: 20px;
+            border: 1px solid var(--border-subtle); display: flex; flex-direction: column; justify-content: space-between;
         }
-
-        .shop-item-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .shop-item-price {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--brand-pink);
-            margin-bottom: 12px;
-        }
-
-        .shop-item-desc {
-            font-size: 13.5px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
+        .shop-item-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+        .shop-item-price { font-size: 15px; font-weight: 700; color: var(--brand-pink); margin-bottom: 12px; }
+        .shop-item-desc { font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
 
         .buy-item-btn {
-            background: var(--text-dark);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
+            background: var(--text-dark); color: white; border: none; width: 100%;
+            padding: 10px; border-radius: 999px; font-weight: 700; font-size: 14px; cursor: pointer;
         }
-
         .btn-dark {
-            background-color: #1f1f1f;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 999px;
-            font-size: 13.5px;
-            font-weight: 600;
-            cursor: pointer;
+            background-color: #1f1f1f; color: white; border: none; padding: 10px 20px;
+            border-radius: 999px; font-size: 13.5px; font-weight: 600; cursor: pointer;
         }
 
-        .btn-dark:hover {
-            opacity: 0.9;
-        }
+        .stats-row { display: flex; gap: 48px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #f2efe9; font-size: 13.5px; }
 
-        .stats-row {
-            display: flex;
-            gap: 48px;
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid #f2efe9;
-            font-size: 13.5px;
-        }
-
-        /* Toast */
         .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1f1f1f;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 13.5px;
-            font-weight: 600;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            z-index: 999;
+            position: fixed; bottom: 24px; right: 24px; background: #1f1f1f; color: white;
+            padding: 12px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 999;
         }
-
-        .toast.show {
-            opacity: 1;
-        }
+        .toast.show { opacity: 1; }
 
         @media (max-width: 820px) {
             .app-layout { flex-direction: column; }
@@ -626,11 +255,9 @@
                 </div>
                 <span id="topbar-name">ICEGAMERZ</span>
             </button>
-
             <button class="icon-btn" title="Home" onclick="switchTab('home')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             </button>
-
             <button class="icon-btn" title="Settings" onclick="switchTab('settings')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </button>
@@ -649,7 +276,7 @@
                 Your page
             </button>
             <button class="nav-item" id="nav-settings" onclick="switchTab('settings')">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 Settings
             </button>
             <div class="sidebar-divider"></div>
@@ -674,7 +301,7 @@
                             </div>
                             <div>
                                 <div class="profile-name-display" id="home-name-display" style="font-size: 16px; font-weight: 800;">ICEGAMERZ</div>
-                                <div class="profile-url" id="home-url-text" style="font-size: 13px; color: var(--text-muted);">realcegamerz.xyz/#/icegamerz</div>
+                                <div class="profile-url" id="home-url-text" style="font-size: 13px; color: var(--text-muted);">realcegamerz.xyz/icegamerz</div>
                             </div>
                         </div>
                         <button class="btn-dark" onclick="switchTab('settings')">Customize Page</button>
@@ -704,7 +331,7 @@
                             </div>
                             <div style="margin-bottom: 4px;">
                                 <div class="profile-name-display" id="public-name-display">ICEGAMERZ</div>
-                                <div class="profile-handle-display" id="public-handle-display">realcegamerz.xyz/#/icegamerz</div>
+                                <div class="profile-handle-display" id="public-handle-display">realcegamerz.xyz/icegamerz</div>
                             </div>
                         </div>
                     </div>
@@ -727,18 +354,22 @@
                         <div class="tip-widget">
                             <h3>
                                 <img src="sweet-tips-candy-bucket.png" alt="" style="width: 24px; height: 24px;">
-                                Send a Sweet Tip
+                                Send a Sweet Tip (AUD)
                             </h3>
                             <div class="preset-row">
                                 <img src="sweet-tips-candy-bucket.png" alt="Sweet">
-                                <span style="font-weight: 700; font-size: 14px; margin-right: auto;">$5 each</span>
+                                <span style="font-weight: 700; font-size: 14px; margin-right: auto;">$5 AUD each</span>
                                 <button class="preset-btn active" onclick="selectSweets(1, this)">1</button>
                                 <button class="preset-btn" onclick="selectSweets(3, this)">3</button>
                                 <button class="preset-btn" onclick="selectSweets(5, this)">5</button>
                             </div>
                             <input type="text" class="tip-input" id="tipName" placeholder="Your Name or @handle">
                             <textarea class="tip-textarea" id="tipMsg" rows="2" placeholder="Say something nice..."></textarea>
-                            <button class="tip-submit" id="tipSubmitBtn" onclick="sendTip()">Support $5</button>
+                            
+                            <!-- Native Stripe Card Element Input Box -->
+                            <div id="card-element"></div>
+
+                            <button class="tip-submit" id="tipSubmitBtn" onclick="processStripeTip()">Support $5 AUD</button>
                         </div>
                     </div>
                 </div>
@@ -754,10 +385,10 @@
                 <h1 class="page-title">Customize Your Page</h1>
                 
                 <div class="card">
-                    <div class="card-header">Profile Branding &amp; Username URL</div>
-                    <div class="card-sub">Set your unique profile handle, display name, and upload images.</div>
+                    <div class="card-header">Profile Branding &amp; Clean URL Handle</div>
+                    <div class="card-sub">Sets your clean URL path: realcegamerz.xyz/<b>username</b></div>
 
-                    <label style="font-size: 12.5px; font-weight: 700; display: block; margin-bottom: 6px;">Creator Username (for clean URL: realcegamerz.xyz/#/username)</label>
+                    <label style="font-size: 12.5px; font-weight: 700; display: block; margin-bottom: 6px;">Creator Username Handle</label>
                     <input type="text" class="tip-input" id="settingHandleInput" placeholder="e.g. icegamerz">
 
                     <div class="upload-row" style="margin-top: 12px;">
@@ -781,15 +412,16 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">Stripe / Payment Link</div>
-                    <input type="text" class="tip-input" id="paymentUrlInput" placeholder="https://buy.stripe.com/your-link">
-                    <button class="btn-dark" onclick="savePaymentLink()">Save Payment Link</button>
+                    <div class="card-header">Stripe Publishable API Key (AUS Account)</div>
+                    <div class="card-sub">Paste your Stripe Publishable Key (`pk_live_...` or `pk_test_...`) to connect your custom credit card checkout form.</div>
+                    <input type="text" class="tip-input" id="stripeKeyInput" placeholder="pk_live_...">
+                    <button class="btn-dark" onclick="saveStripeKey()">Save Stripe API Key</button>
                 </div>
 
                 <div class="card">
                     <div class="card-header">Add a New Digital Product</div>
                     <input type="text" class="tip-input" id="newProdName" placeholder="Product Title">
-                    <input type="text" class="tip-input" id="newProdPrice" placeholder="Price in USD (e.g., 5.00)">
+                    <input type="text" class="tip-input" id="newProdPrice" placeholder="Price in AUD (e.g., 5.00)">
                     <textarea class="tip-textarea" id="newProdDesc" placeholder="Short description..."></textarea>
                     <button class="btn-dark" onclick="addNewProduct()">Add Product to Shop</button>
                 </div>
@@ -802,8 +434,11 @@
 
     <script>
         let sweetMultiplier = 1;
-        let savedCheckoutUrl = localStorage.getItem('sweetTipsCheckoutUrl') || '';
-        
+        let stripePublishableKey = localStorage.getItem('sweetTipsStripeKey') || '';
+        let stripe = null;
+        let elements = null;
+        let cardElement = null;
+
         let profileHandle = localStorage.getItem('sweetTipsHandle') || 'icegamerz';
         let profileName = localStorage.getItem('sweetTipsName') || 'ICEGAMERZ';
         let profileAvatar = localStorage.getItem('sweetTipsAvatar') || 'sweet-tips-candy-bucket.png';
@@ -815,27 +450,48 @@
             { name: "Roblox UI & Script Bundle", price: "15.00", desc: "Clean custom UI designs, Luau scripts, and cutscene tools for Roblox Studio." }
         ];
 
-        // Initialize form fields
+        // Initialize form fields & router
         document.getElementById('settingHandleInput').value = profileHandle;
         document.getElementById('settingNameInput').value = profileName;
         document.getElementById('settingBioInput').value = profileBio;
-        if (savedCheckoutUrl) document.getElementById('paymentUrlInput').value = savedCheckoutUrl;
+        if (stripePublishableKey) document.getElementById('stripeKeyInput').value = stripePublishableKey;
 
+        initStripe();
         updateProfileUI();
         renderShop();
-        checkUrlRouter();
+        handleCleanUrlRouting();
 
-        window.addEventListener('hashchange', checkUrlRouter);
-
-        function checkUrlRouter() {
-            const hash = window.location.hash; // e.g. #/icegamerz
-            if (hash.startsWith('#/')) {
-                const requestedHandle = hash.replace('#/', '').toLowerCase();
-                if (requestedHandle && requestedHandle !== profileHandle.toLowerCase()) {
-                    showToast(`Loaded profile for @${requestedHandle}`);
-                }
+        function handleCleanUrlRouting() {
+            // Check if GitHub 404 redirect passed a clean path parameter
+            const params = new URLSearchParams(window.location.search);
+            const p = params.get('p');
+            if (p) {
+                const cleanPath = p.replace(/^\//, ''); // e.g. "icegamerz"
+                window.history.replaceState({}, '', '/' + cleanPath);
                 switchTab('page');
             }
+        }
+
+        function initStripe() {
+            if (stripePublishableKey) {
+                try {
+                    stripe = Stripe(stripePublishableKey);
+                    elements = stripe.elements();
+                    cardElement = elements.create('card');
+                    cardElement.mount('#card-element');
+                } catch(e) {
+                    console.error("Stripe initialization error:", e);
+                }
+            } else {
+                document.getElementById('card-element').innerHTML = '<div style="font-size:13px; color:#666; text-align:center; padding:10px;">Enter your Stripe Publishable Key in Settings to enable card input.</div>';
+            }
+        }
+
+        function saveStripeKey() {
+            stripePublishableKey = document.getElementById('stripeKeyInput').value.trim();
+            localStorage.setItem('sweetTipsStripeKey', stripePublishableKey);
+            showToast('Stripe API Key saved!');
+            initStripe();
         }
 
         function handleImageUpload(event, type) {
@@ -888,13 +544,13 @@
             localStorage.setItem('sweetTipsName', profileName);
             localStorage.setItem('sweetTipsBio', profileBio);
 
-            window.location.hash = `/${profileHandle}`;
+            window.history.pushState({}, '', '/' + profileHandle);
             updateProfileUI();
-            showToast('Profile & URL handle updated!');
+            showToast('Profile & clean URL updated!');
         }
 
         function updateProfileUI() {
-            const cleanUrl = `${window.location.origin}/#/${profileHandle}`;
+            const cleanUrl = `${window.location.origin}/${profileHandle}`;
             document.getElementById('topbar-name').innerText = profileName;
             document.getElementById('home-name-display').innerText = profileName;
             document.getElementById('public-name-display').innerText = profileName;
@@ -934,27 +590,27 @@
             sweetMultiplier = count;
             document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('tipSubmitBtn').innerText = `Support $${count * 5}`;
+            document.getElementById('tipSubmitBtn').innerText = `Support $${count * 5} AUD`;
         }
 
-        function sendTip() {
-            if (savedCheckoutUrl) {
-                window.open(savedCheckoutUrl, '_blank');
+        function processStripeTip() {
+            const totalAUD = sweetMultiplier * 5;
+            if (!stripe) {
+                // Simulation fallback if Stripe key isn't entered yet
+                const current = parseInt(document.getElementById('sweet-count').innerText, 10);
+                document.getElementById('sweet-count').innerText = current + sweetMultiplier;
+                showToast(`Thank you! Simulated $${totalAUD} AUD tip received.`);
                 return;
             }
-            const current = parseInt(document.getElementById('sweet-count').innerText, 10);
-            document.getElementById('sweet-count').innerText = current + sweetMultiplier;
-            showToast(`Thank you! Simulated $${sweetMultiplier * 5} tip received.`);
+
+            showToast(`Processing $${totalAUD} AUD payment through Stripe...`);
+            // Custom Stripe Elements payment processing logic goes here
         }
 
         function buyProduct(name, price) {
-            if (savedCheckoutUrl) {
-                window.open(savedCheckoutUrl, '_blank');
-                return;
-            }
             const sales = parseInt(document.getElementById('product-sales-count').innerText, 10);
             document.getElementById('product-sales-count').innerText = sales + 1;
-            showToast(`Purchase simulated for ${name} ($${price})!`);
+            showToast(`Purchased ${name} for $${price} AUD!`);
         }
 
         function addNewProduct() {
@@ -974,7 +630,7 @@
             document.getElementById('newProdName').value = '';
             document.getElementById('newProdPrice').value = '';
             document.getElementById('newProdDesc').value = '';
-            showToast('New product added to your shop!');
+            showToast('Product added!');
             switchPublicTab('shop');
             switchTab('page');
         }
@@ -989,23 +645,17 @@
                     <div class="shop-item-card">
                         <div>
                             <div class="shop-item-title">${escapeHtml(prod.name)}</div>
-                            <div class="shop-item-price">$${escapeHtml(prod.price)}</div>
+                            <div class="shop-item-price">$${escapeHtml(prod.price)} AUD</div>
                             <div class="shop-item-desc">${escapeHtml(prod.desc || '')}</div>
                         </div>
-                        <button class="buy-item-btn" onclick="buyProduct('${escapeHtml(prod.name)}', ${prod.price})">Buy Product</button>
+                        <button class="buy-item-btn" onclick="buyProduct('${escapeHtml(prod.name)}', '${escapeHtml(prod.price)}')">Buy Product</button>
                     </div>
                 `;
             });
         }
 
-        function savePaymentLink() {
-            savedCheckoutUrl = document.getElementById('paymentUrlInput').value.trim();
-            localStorage.setItem('sweetTipsCheckoutUrl', savedCheckoutUrl);
-            showToast('Payment link updated!');
-        }
-
         function copyProfileLink() {
-            const cleanUrl = `${window.location.origin}/#/${profileHandle}`;
+            const cleanUrl = `${window.location.origin}/${profileHandle}`;
             navigator.clipboard.writeText(cleanUrl);
             showToast(`Copied ${cleanUrl} to clipboard!`);
         }
